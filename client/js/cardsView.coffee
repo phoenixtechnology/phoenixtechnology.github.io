@@ -99,41 +99,42 @@ CardsView = React.createClass
   mixins: [ Router.Navigation, Router.State ]
 
 
-  # getInitialState: ->
-  #   CardsStore.getAllCards (cards) =>
-  #     @setState cards: cards
-
-
-
-
   open: (event) ->
     postId = event.target.getAttribute 'data-id'
     @transitionTo '/post/' + postId
-    # @props.open event.target.getAttribute 'data-id'
-
 
 
   render: ->
+    console.log window.innerWidth
 
     div null,
 
-      div
-        style:
-          display: 'inline-block'
-          verticalAlign: 'top'
+      for column in [0 .. (window.innerWidth // 650)]
 
-        _.map (@props.cards?.slice 0, (@props.cards.length / 2)), (card, cardIndex) =>
-          cardTemplate card, cardIndex, @open
+        div
+          style:
+            display: 'inline-block'
+            verticalAlign: 'top'
+
+          _.map (@props.cards?.slice (column * (@props.cards.length / (window.innerWidth // 650))), ((column + 1) * (@props.cards.length / (window.innerWidth // 650)))), (card, cardIndex) =>
+            cardTemplate card, cardIndex, @open
+      
+      # div
+      #   style:
+      #     display: 'inline-block'
+      #     verticalAlign: 'top'
+
+      #   _.map (@props.cards?.slice 0, (@props.cards.length / 2)), (card, cardIndex) =>
+      #     cardTemplate card, cardIndex, @open
 
 
-      div
-        style:
-          display: 'inline-block'
-          verticalAlign: 'top'
+      # div
+      #   style:
+      #     display: 'inline-block'
+      #     verticalAlign: 'top'
 
-        _.map (@props.cards?.slice (@props.cards.length / 2), @props.cards.length), (card, cardIndex) =>
-          cardTemplate card, cardIndex + (@props.cards.length / 2), @open
-
+      #   _.map (@props.cards?.slice (@props.cards.length / 2), @props.cards.length), (card, cardIndex) =>
+      #     cardTemplate card, cardIndex + (@props.cards.length / 2), @open
 
 
 module.exports = React.createFactory CardsView

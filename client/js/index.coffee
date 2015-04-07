@@ -45,7 +45,6 @@ IndexClass = React.createClass
   searchPressHandle: (event) ->
     if event.key is 'Enter'
       CardsStore.getSearchedCards @state.searchValue, (cards) =>
-        console.log 'CARDS ARE', cards
         @setState cards: [], =>
           @setState cards: cards
 
