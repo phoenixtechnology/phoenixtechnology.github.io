@@ -7,13 +7,13 @@ Route         = Router.Route
 RouteHandler  = Router.RouteHandler
 DefaultRoute  = Router.DefaultRoute
 
-#Pages
-MakeCard  = require './makeCard.coffee'
-Card      = require './specificCard.coffee'
-cardsView = require './cardsView.coffee'
+# Pages
+MakeCard          = require './makeCard.coffee'
+SpecificCardView = require './specificCard.coffee'
+CardsView         = require './cardsView.coffee'
 
-#Stores
-CardsStore = require './cards.store.coffee'
+# Loader
+CardsLoader = require './cards.loader.coffee'
 
 Parse.initialize "9FkdyLJQwebUZOEZxQtxMgXSPIEoz2nDGjlexCtM", "vbqwWBuaejePM5qWO0n1OsMJLUPEnLA7yKM7yay1"
 
@@ -22,20 +22,19 @@ Parse.initialize "9FkdyLJQwebUZOEZxQtxMgXSPIEoz2nDGjlexCtM", "vbqwWBuaejePM5qWO0
 
 IndexClass = React.createClass
 
+
   mixins: [ Router.Navigation, Router.State ]
 
+
   getInitialState: ->
-    CardsStore.getAllCards (cards) =>
+    CardsLoader.getAllCards (cards) =>
       @setState cards: cards
 
     searchValue: ''
 
+
   makeACardToggle: ->
     @transitionTo 'makeACard'
-
-
-  cardToggle: ->
-    @setState specificCard: not @state.specificCard
 
 
   searchHandle: (event) ->
@@ -44,40 +43,40 @@ IndexClass = React.createClass
 
   searchPressHandle: (event) ->
     if event.key is 'Enter'
-      CardsStore.getSearchedCards @state.searchValue, (cards) =>
+      CardsLoader.getSearchedCards @state.searchValue, (cards) =>
         @setState cards: [], =>
           @setState cards: cards
 
 
   render: ->
 
-    div {},
-      div className: 'indent',
-        div className: 'spacer'
+    div null,
+      div className:    'indent',
+        div className:  'spacer'
 
         div
           style:
-            display: 'table'
-            width: '100%'
+            display:  'table'
+            width:    '100%'
 
           a
             href: 'http://www.lmlabs.us'
             img
-              src: './LM3.png'
+              src:            './LM3.png'
               style:
-                height: '4em'
-                float: 'left'
-                marginRight: '1em'
-                boxShadow: '2px 2px 1px #59595b'
+                height:       '4em'
+                float:        'left'
+                marginRight:  '1em'
+                boxShadow:    '2px 2px 1px #59595b'
 
           div 
-            className: 'makeACard'
+            className:      'makeACard'
             style:
-              padding: '1em'
-              height: '4em'
+              padding:      '1em'
+              height:       '4em'
               marginBottom: '1em'
-              marginRight: '1em'
-              display: 'inline-block'
+              marginRight:  '1em'
+              display:      'inline-block'
 
             p 
               className: 'header'
@@ -87,7 +86,7 @@ IndexClass = React.createClass
 
 
             p
-              className: 'header hilight'
+              className:    'header hilight'
               style:
                 display:    'inline-block'
                 marginLeft: '1em'
@@ -104,41 +103,43 @@ IndexClass = React.createClass
 
 
             p
-              className: 'header hilight'
+              className:    'header hilight'
               style:
                 display:    'inline-block'
                 marginLeft: '1em'
               '|'
 
             input
-              className: 'bigInput'
-              placeholder: 'search tags'
-              onChange: @searchHandle
-              onKeyPress: @searchPressHandle
-              value: @state.searchValue
+              className:    'bigInput'
+              placeholder:  'search tags'
+              onChange:     @searchHandle
+              onKeyPress:   @searchPressHandle
+              value:        @state.searchValue
 
           RouteHandler
             cards: @state.cards
 
           div className: 'spacer'
 
+
+
 routes =
   Route
-    name: 'Main'
-    path: '/'
+    name:    'Main'
+    path:    '/'
     handler: IndexClass
 
     DefaultRoute
-      handler: cardsView
+      handler: CardsView
 
     Route
-      name: 'post'
-      path: 'post/:postId'
-      handler: Card
+      name:    'post'
+      path:    'post/:postId'
+      handler: SpecificCardView
 
     Route
-      name: 'makeACard'
-      path: 'make'
+      name:    'makeACard'
+      path:    'make'
       handler: MakeCard
 
 Router.run routes, (handler) ->

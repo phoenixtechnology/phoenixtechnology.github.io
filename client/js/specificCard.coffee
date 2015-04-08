@@ -12,56 +12,16 @@ Card  = Parse.Object.extend 'Card'
 {p, div, input, textarea, a, img} = React.DOM
 
 
-formatPostNumber = (postNumber) ->
-  asString = '' + postNumber
-  while asString.length < 10
-    asString = '0' + asString
 
-  '>>' + asString  
+{formatPostNumber, formatDate, makeTwoDigits, shortener, breakIntoParagraphs} = require './functionsOfConvenience.coffee'
 
-
-makeTwoDigits = (digit) ->
-  if (digit + '').length < 2
-    '0' + digit
-  else
-    digit
-
-
-formatDate = (date) ->
-  formattedDate = ''
-  formattedDate += date.getFullYear()
-  formattedDate += makeTwoDigits(date.getMonth() + 1)
-  formattedDate += makeTwoDigits(date.getDate() + 1)  + ' '
-  formattedDate += makeTwoDigits(date.getHours())     + ':'
-  formattedDate += makeTwoDigits(date.getMinutes() )  + ' '
-
-  formattedDate
-
-
-shortener = (string) ->
-  if string.length > 40
-    string.slice(0,40) + '..'
-  else
-    string
-
-
-breakIntoParagraphs = (content) ->
-  paragraphs = ['']
-  paragraphIndex = 0
-
-  for char in content
-    if char isnt '\n'
-      paragraphs[ paragraphIndex ] += char
-    else
-      paragraphs.push ''
-      paragraphIndex++
-
-  paragraphs
 
 
 Card = React.createClass
 
+
   mixins: [ Router.Navigation, Router.State ]
+
 
   componentWillMount: ->
     
@@ -84,22 +44,24 @@ Card = React.createClass
             objectId:   @state.thisCard.id
 
           repliesQuery.find 
+
             success: (results) =>
               replies = _.map results, (queryItem) ->
-                reply = queryItem.attributes
-                reply.id = queryItem.id
+                reply           = queryItem.attributes
+                reply.id        = queryItem.id
                 reply.createdAt = queryItem.createdAt
                 reply
 
+              replies = _.sortBy replies, (reply) ->
+                reply.postNumber
+
               @setState replies: replies
 
-              # @setState 
-              #   replies: 
-              #   =>
-              #     console.log @state.replies
-
             error: (object, error) ->
-              console.log object, error
+              console.log 'Did not worked :(', object, error
+
+        error: (object, error) ->
+          console.log 'Did not worked :(', object, error
 
 
 
@@ -145,7 +107,6 @@ Card = React.createClass
       else
         newReply.set 'hash', ''
 
-
       newReply.save null,
 
         success: =>
@@ -155,6 +116,7 @@ Card = React.createClass
           console.log 'did not worked :(', object, error
 
     PostCount = Parse.Object.extend 'PostCount'
+
     query = new Parse.Query(PostCount)
     query.get "wmVCATl0Wb",
 
@@ -223,11 +185,11 @@ Card = React.createClass
           div
             style:
               verticalAlign: 'top'
-              marginLeft: '1em'
-              display: 'inline-block'
+              marginLeft:    '1em'
+              display:       'inline-block'
 
             p
-              className: 'point'
+              className:    'point'
               style:
                 fontWeight: 'bold'
               card.name
@@ -260,11 +222,11 @@ Card = React.createClass
 
         div
           style:
-            verticalAlign: 'top'
-            marginLeft: '1em'
-            display: 'inline-block'
-            width: '100%'
-            height: '100%'
+            verticalAlign:  'top'
+            marginLeft:     '1em'
+            display:        'inline-block'
+            width:          '100%'
+            height:         '100%'
 
           _.map breakIntoParagraphs(card.content), (paragraph) ->
             
@@ -284,11 +246,11 @@ Card = React.createClass
 
           div
             style:
-              marginTop: '1em'
-              borderStyle: 'dotted'
-              borderWidth: '1px'
-              borderColor: '#9d9d9d'
-              padding: '1em'
+              marginTop:    '1em'
+              borderStyle:  'dotted'
+              borderWidth:  '1px'
+              borderColor:  '#9d9d9d'
+              padding:      '1em'
 
             div null,
 
@@ -299,23 +261,23 @@ Card = React.createClass
                 reply.name
 
               p
-                className: 'point'
+                className:    'point'
                 style:
-                  display: 'inline-block'
+                  display:    'inline-block'
                   marginLeft: '1em'
                 reply.hash.slice 0, 13
 
               p
-                className: 'point'
+                className:    'point'
                 style:
-                  display: 'inline-block'
+                  display:    'inline-block'
                   marginLeft: '1em'
                 formatDate reply.createdAt
               
               p
-                className: 'point'
+                className:    'point'
                 style:
-                  display: 'inline-block'
+                  display:    'inline-block'
                   marginLeft: '1em'
                 formatPostNumber reply.postNumber
 
@@ -327,23 +289,23 @@ Card = React.createClass
 
               if reply.image
                 a
-                  href: reply.image
+                  href:         reply.image
                   style:
-                    display: 'inline-block'
+                    display:    'inline-block'
                     marginRight: '1em'
                   img
                     src: reply.image
                     style:
-                      maxWidth: 200
-                      maxHeight: 200
-                      width: 'auto'
-                      height: 'auto'
+                      maxWidth:   200
+                      maxHeight:  200
+                      width:      'auto'
+                      height:     'auto'
 
               div
                 style:
-                  verticalAlign: 'top'
-                  display: 'inline-block'
-                  width: 675
+                  verticalAlign:  'top'
+                  display:        'inline-block'
+                  width:          675
   
                 _.map breakIntoParagraphs(reply.content), (paragraph) ->
 
@@ -393,6 +355,7 @@ Card = React.createClass
             onChange:     @imageHandle
 
     else
+
       div null
 
 

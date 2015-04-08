@@ -107,7 +107,8 @@ MakeCard = React.createClass
 
 
     PostCount = Parse.Object.extend 'PostCount'
-    query = new Parse.Query(PostCount)
+
+    query = new Parse.Query PostCount
     query.get "wmVCATl0Wb",
 
       success: (postCount) =>
@@ -129,6 +130,7 @@ MakeCard = React.createClass
         marginRight: 'auto'
 
       div null,
+
         p 
           style:
             display: 'inline-block'
@@ -173,12 +175,12 @@ MakeCard = React.createClass
 
         _.map @state.tags, (tag, tagIndex) =>
           p
-            className: 'tag'
+            className:    'tag'
             style:
-              display: 'inline-block'
-              cursor: 'pointer'
+              display:    'inline-block'
+              cursor:     'pointer'
             'data-index': tagIndex
-            onClick: @removeTag
+            onClick:      @removeTag
             tag + ' X'
 
 
