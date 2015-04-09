@@ -85,22 +85,29 @@ MakeCard = React.createClass
 
   submitNewCard: ->
 
+
+    goToNewCard = (postId) =>
+      @transitionTo '/post/' + postId
+
+
     makeNewCard = (cardNumber) =>
 
       newCard = new Card()
-      newCard.set 'content',    @state.content
-      newCard.set 'name',       @state.name
-      newCard.set 'title',      @state.title
-      newCard.set 'tags',       @state.tags
-      newCard.set 'image',      @state.image
-      newCard.set 'postNumber', cardNumber
+      newCard.set 'content',            @state.content
+      newCard.set 'name',               @state.name
+      newCard.set 'title',              @state.title
+      newCard.set 'tags',               @state.tags
+      newCard.set 'image',              @state.image
+      newCard.set 'postNumber',         cardNumber
+      newCard.set 'highestReplyChild',  cardNumber
       if @state.hash isnt ''
         newCard.set 'hash', (SHA256 @state.hash).toString()
       else
         newCard.set 'hash', ''
 
       newCard.save null, 
-        success: ->
+        success: (card) =>
+          goToNewCard card.id
 
         error: (object, error) ->
           console.log 'did not worked :(', object, error
@@ -143,7 +150,7 @@ MakeCard = React.createClass
             float:   'right'
             cursor:  'pointer'
           className: 'exit'
-          onClick: @exit
+          onClick:   @exit
           'X'
 
       input

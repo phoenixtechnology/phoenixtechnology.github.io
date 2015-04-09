@@ -15,6 +15,8 @@ module.exports =
       cards = _.sortBy cards, (card) ->
         card.highestReplyChild
 
+      cards.reverse()
+
       next cards
 
     Card = Parse.Object.extend 'Card'
