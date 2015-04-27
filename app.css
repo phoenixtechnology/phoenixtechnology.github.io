@@ -147,7 +147,6 @@ body {
   width: 185px;
   height: 2em;
   margin-bottom: 0.5em;
-  width: 185px;
   border-color: #9d9d9d;
   outline: none;
   width: 100%;
@@ -176,11 +175,27 @@ body {
   width: 185px;
   height: 2em;
   margin-bottom: 0.5em;
-  width: 185px;
   border-color: #9d9d9d;
   outline: none;
   border: none;
   cursor: pointer;
+}
+.submit.void {
+  background: #fff;
+  border: solid;
+  border-width: 2px;
+  border-color: #9d9d9d;
+  font-family: bodyContent;
+  font-size: 1em;
+  color: #9d9d9d;
+  line-height: 120%;
+}
+.submit.void:hover {
+  font-family: bodyContent;
+  font-size: 1em;
+  color: #9d9d9d;
+  line-height: 120%;
+  background-color: #fff;
 }
 .submit:hover {
   font-family: bodyContent;
